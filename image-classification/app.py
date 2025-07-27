@@ -1,29 +1,25 @@
+from tensorflow.keras.models import load_model
 import streamlit as st
-import tensorflow as tf
-from tensorflow.keras.preprocessing import image
-import numpy as np
-import os
 from PIL import Image
+import numpy as np
 
-# Load model
-model = tf.keras.models.load_model('models/mobilenet_model.keras')
+# Load model from relative path
+model = load_model("model/mobilenet_model.keras")
 
-# Class names
-class_names = ['Cat', 'Dog']  # Change as per your dataset
+st.title("Image Classification Demo")
 
-st.title("Image Classifier")
-uploaded_file = st.file_uploader("Upload an image...", type=["jpg", "png"])
+uploaded_file = st.file_uploader("Upload an image", type=["jpg", "png"])
 
-if uploaded_file:
-    img = Image.open(uploaded_file)
-    st.image(img, caption='Uploaded Image', use_column_width=True)
-    
-    img = img.resize((224, 224))
-    img_array = image.img_to_array(img)
-    img_array = np.expand_dims(img_array, axis=0) / 255.0
+if uploaded_file is not None:
+    image = Image.open(uploaded_file).resize((224, 224))
+    st.image(image, caption="Uploaded Image", use_column_width=True)
 
+    # Preprocess
+    img_array = np.expand_dims(np.array(image) / 255.0, axis=0)
+
+    # Predict
     prediction = model.predict(img_array)
-    predicted_class = class_names[np.argmax(prediction)]
-    st.write(f"Prediction: **{predicted_class}**")
+    st.write("Prediction:", prediction)
+
 
 
