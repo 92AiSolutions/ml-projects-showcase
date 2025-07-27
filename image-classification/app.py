@@ -1,17 +1,18 @@
-from tensorflow.keras.models import load_model
 import streamlit as st
+from tensorflow.keras.models import load_model
 from PIL import Image
 import numpy as np
+import os
 
-# Load model from relative path
+# Load model
 model = load_model("model/mobilenet_model.keras")
 
 st.title("Image Classification Demo")
 
-uploaded_file = st.file_uploader("Upload an image", type=["jpg", "png"])
+uploaded_file = st.file_uploader("Upload an image", type=["jpg", "png", "jpeg"])
 
 if uploaded_file is not None:
-    image = Image.open(uploaded_file).resize((224, 224))
+    image = Image.open(uploaded_file).convert("RGB").resize((224, 224))
     st.image(image, caption="Uploaded Image", use_column_width=True)
 
     # Preprocess
@@ -19,7 +20,4 @@ if uploaded_file is not None:
 
     # Predict
     prediction = model.predict(img_array)
-    st.write("Prediction:", prediction)
-
-
-
+    st.write("Prediction:", prediction.tolist())
