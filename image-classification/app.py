@@ -2,10 +2,9 @@ import streamlit as st
 from tensorflow.keras.models import load_model
 from PIL import Image
 import numpy as np
-import os
 
-# Load model
-model = load_model("model/mobilenet_model.keras")
+# Load the .h5 model
+model = load_model("model/mobilenet_model.h5")
 
 st.title("Image Classification Demo")
 
@@ -15,7 +14,7 @@ if uploaded_file is not None:
     image = Image.open(uploaded_file).convert("RGB").resize((224, 224))
     st.image(image, caption="Uploaded Image", use_column_width=True)
 
-    # Preprocess
+    # Preprocess image
     img_array = np.expand_dims(np.array(image) / 255.0, axis=0)
 
     # Predict
